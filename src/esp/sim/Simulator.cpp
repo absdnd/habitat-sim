@@ -799,7 +799,7 @@ double Simulator::getPhysicsTimeStep() {
 
 bool Simulator::recomputeNavMesh(nav::PathFinder& pathfinder,
                                  const nav::NavMeshSettings& navMeshSettings,
-                                 bool includeStaticObjects) {
+                                 const bool includeStaticObjects) {
   CORRADE_ASSERT(config_.createRenderer,
                  "::recomputeNavMesh: "
                  "SimulatorConfiguration::createRenderer is false. Scene "
@@ -807,7 +807,23 @@ bool Simulator::recomputeNavMesh(nav::PathFinder& pathfinder,
                  "loaded without renderer initialization.",
                  false);
 
-  assets::MeshData::uptr joinedMesh = assets::MeshData::create_unique();
+  assets::MeshData::ptr joinedMesh = getJoinedMesh(includeStaticObjects);
+
+  if (!pathfinder.build(navMeshSettings, *joinedMesh)) {
+    ESP_ERROR() << "Failed to build navmesh";
+    return false;
+  }
+
+  if (&pathfinder == pathfinder_.get()) {
+    resetNavMeshVisIfActive();
+  }
+
+  ESP_DEBUG() << "reconstruct navmesh successful";
+  return true;
+}
+
+assets::MeshData::ptr Simulator::getJoinedMesh(const bool includeStaticObjects) {
+  assets::MeshData::ptr joinedMesh = assets::MeshData::create();
   auto stageInitAttrs = physicsManager_->getStageInitAttributes();
   if (stageInitAttrs != nullptr) {
     joinedMesh = resourceManager_->createJoinedCollisionMesh(
@@ -900,17 +916,19 @@ bool Simulator::recomputeNavMesh(nav::PathFinder& pathfinder,
             "the underlying joined collision mesh has no vertices. This is "
             "probably due to the current scene being NONE. Aborting");
 
-  if (!pathfinder.build(navMeshSettings, *joinedMesh)) {
-    ESP_ERROR() << "Failed to build navmesh";
-    return false;
+  return joinedMesh;
+}
+
+assets::MeshData::ptr Simulator::getJoinedSemanticMesh(std::vector<std::uint16_t>& objectIds) {
+  assets::MeshData::ptr joinedSemanticMesh = assets::MeshData::create();
+  auto stageInitAttrs = physicsManager_->getStageInitAttributes();
+  if (stageInitAttrs != nullptr) {
+    joinedSemanticMesh = resourceManager_->createJoinedSemanticCollisionMesh(
+        objectIds,
+        stageInitAttrs->getSemanticAssetHandle());
   }
 
-  if (&pathfinder == pathfinder_.get()) {
-    resetNavMeshVisIfActive();
-  }
-
-  ESP_DEBUG() << "reconstruct navmesh successful";
-  return true;
+  return joinedSemanticMesh;
 }
 
 bool Simulator::setNavMeshVisualization(bool visualize) {
