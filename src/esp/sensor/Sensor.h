@@ -10,6 +10,8 @@
 #include "esp/core/Buffer.h"
 #include "esp/core/Esp.h"
 
+#include "config.h"
+
 namespace esp {
 
 namespace sim {
