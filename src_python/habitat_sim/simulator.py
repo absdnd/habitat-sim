@@ -639,7 +639,6 @@ class Sensor:
         if self._spec.sensor_type == SensorType.AUDIO:
             # do nothing in draw observation, get_observation will be called after this
             # run the simulation there
-            print("NO-OP -- Nothing to draw for audio")
             return
         else:
             assert self._sim.renderer is not None
@@ -656,7 +655,6 @@ class Sensor:
         if self._spec.sensor_type == SensorType.AUDIO:
             # do nothing in draw observation, get_observation will be called after this
             # run the simulation there
-            print("NO-OP -- Nothing to draw for audio")
             return
         else:
             assert self._sim.renderer is not None
@@ -760,7 +758,8 @@ class Sensor:
         rot = self._agent.state.rotation
 
         audio_sensor.setAudioListenerTransform(
-            audio_sensor.node.absolute_translation, # set the listener position
+            # audio_sensor.node.absolute_translation, # set the listener position
+            np.array([-10.3, 1.52, 1.73]),
             np.array([rot.w, rot.x, rot.y, rot.z])  # set the listener orientation
         )
 

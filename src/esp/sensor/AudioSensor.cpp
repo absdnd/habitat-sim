@@ -335,7 +335,9 @@ void AudioSensor::loadSemanticMesh(sim::Simulator& sim) {
                 << ", LastUpdate : " << lastUpdate;
 
     // Send all indices for this particular category
+    // std::string matName = "void";
     audioSimulator_->LoadMeshIndices(indices, catToIndices.first);
+    // audioSimulator_->LoadMeshIndices(indices, matName);
 
     totalIndicesLoaded += indices.indexCount;
   }

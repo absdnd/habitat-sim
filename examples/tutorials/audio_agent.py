@@ -13,14 +13,33 @@ import habitat_sim._ext.habitat_sim_bindings as hsim_bindings
 import habitat_sim.sensor
 import habitat_sim.sim
 
+import glob
+import os
+import librosa
+import matplotlib.pyplot as plt
+from librosa.display import waveplot
 
 def printTime():
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("Current Time =", current_time)
 
+def plotIR(path:str):
+    # material_rir, _ = librosa.load('/home/sangarg/AudioSimulation0/ir-SimplificationOff-WithMat.wav', sr=44100, mono=False)
+    # no_material_rir, _ = librosa.load('/home/sangarg/AudioSimulation0/ir-simplicationOff-WithoutMat.wav', sr=44100, mono=False)
+    rir,_ = librosa.load('/home/sangarg/AudioSimulation0/ir.wav', sr=44100, mono=False)
+    no_simplify_rir,_ = librosa.load('/home/sangarg/MeridianSimulation0/ir.wav', sr=44100, mono=False)
 
-def main():
+    fig, axes = plt.subplots(2, 1)
+    max_lenth = 2000
+    waveplot(rir[0, :4000], 44100, ax=axes[0])
+    waveplot(no_simplify_rir[0, :4000], 44100, ax=axes[1])
+    # waveplot(material_rir[0, :4000], 44100, ax=axes[0])
+    # waveplot(no_material_rir[0, :4000], 44100, ax=axes[1])
+    plt.show()
+
+
+def runSimulation(path:str):
     backend_cfg = habitat_sim.SimulatorConfiguration()
     backend_cfg.scene_id = (
         "data/scene_datasets/mp3d_example/17DRP5sb8fy/17DRP5sb8fy.glb"
@@ -52,7 +71,7 @@ def main():
     # create the Audio sensor specs
     audio_sensor_spec = habitat_sim.AudioSensorSpec()
     audio_sensor_spec.uuid = "audio_sensor"
-    audio_sensor_spec.outputDirectory = "/home/sangarg/AudioSimulation"
+    audio_sensor_spec.outputDirectory = path
     audio_sensor_spec.acousticsConfig = acoustics_config
     audio_sensor_spec.channelLayout = channel_layout
 
@@ -63,7 +82,7 @@ def main():
     audio_sensor = sim.get_agent(0)._sensors["audio_sensor"]
 
     # set audio source location, no need to set the agent location, will be set implicitly
-    audio_sensor.setAudioSourceTransform(np.array([3.1035, 1.57245, -4.15972]))
+    audio_sensor.setAudioSourceTransform(np.array([-10.3, 1.52, 1.73]))
 
     # run the simulation
     for i in range(1):
@@ -73,7 +92,7 @@ def main():
         obs = sim.get_sensor_observations()["audio_sensor"]
 
         # print the audio observations
-        print(obs)
+        # print(obs)
 
         # write the observations to a file
         p = audio_sensor_spec.outputDirectory + str(i) + "/ir";
@@ -87,9 +106,16 @@ def main():
             f.close()
 
         print("End Time : ")
+
+        # plotIR(p)
+
         printTime()
 
     sim.close()
+
+def main():
+    runSimulation('/home/sangarg/AudioSimulation')
+    runSimulation('/home/sangarg/MeridianSimulation')
 
 
 if __name__ == "__main__":
