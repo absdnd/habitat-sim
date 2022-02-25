@@ -114,7 +114,9 @@ void AudioSensor::runSimulation(sim::Simulator& sim) {
       // load the normal render mesh without any material info
       ESP_DEBUG() << logHeader_
                   << "Semantic scene does not exist or materials are disabled, "
-                     "will use default material";
+                     "will use default material, enableMaterial:"
+                     << audioSensorSpec_->acousticsConfig_.enableMaterials
+                     << ", semanticMeshBool:" << sim.semanticSceneExists();
       loadMesh(sim);
     }
   }

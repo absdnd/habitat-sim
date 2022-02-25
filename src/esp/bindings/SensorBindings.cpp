@@ -308,6 +308,8 @@ void initSensorBindings(py::module& m) {
       .def_readwrite("unitScale", &HabitatAcoustics::Configuration::unitScale)
       .def_readwrite("globalVolume",
                      &HabitatAcoustics::Configuration::globalVolume)
+      .def_readwrite("listenerRadius",
+                     &HabitatAcoustics::Configuration::listenerRadius)
       .def_readwrite("indirectRayCount",
                      &HabitatAcoustics::Configuration::indirectRayCount)
       .def_readwrite("indirectRayDepth",

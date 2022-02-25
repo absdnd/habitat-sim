@@ -756,10 +756,13 @@ class Sensor:
         audio_sensor = self._agent._sensors["audio_sensor"]
         # tell the audio sensor about the agent location
         rot = self._agent.state.rotation
+        # rot = quat_from_angle_axis(0, np.array([0, 1, 0]))
 
         audio_sensor.setAudioListenerTransform(
-            # audio_sensor.node.absolute_translation, # set the listener position
-            np.array([-10.3, 1.52, 1.73]),
+            audio_sensor.node.absolute_translation, # set the listener position
+            # np.array([-10.3, 1.52, 1.73]),
+            # np.array([-10.308625, 0.021203000000000083 + 1.5, 0.730099]),
+            # np.array([-10.308625, 0.021203000000000083 + 1.5, 0.730099]),
             np.array([rot.w, rot.x, rot.y, rot.z])  # set the listener orientation
         )
 
