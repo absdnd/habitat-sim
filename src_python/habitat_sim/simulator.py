@@ -92,7 +92,7 @@ class Simulator(SimulatorBackend):
         config.sim_cfg.create_renderer = any(
             map(lambda cfg: len(cfg.sensor_specifications) > 0, config.agents)
         )
-        config.sim_cfg.load_semantic_mesh = any(
+        config.sim_cfg.load_semantic_mesh |= any(
             map(
                 lambda cfg: any(
                     map(
