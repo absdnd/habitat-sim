@@ -510,7 +510,7 @@ jobs:
               pip install -r requirements.txt --progress-bar off
               pip install imageio imageio-ffmpeg
               git submodule update --init --recursive --jobs 8
-              python -u setup.py install --build-type "Release" --lto --headless --vhacd --bullet --audio
+              python -u setup.py install --build-type "Release" --lto --headless --audio
               python examples/tutorials/audio_agent.py
 
       - run:

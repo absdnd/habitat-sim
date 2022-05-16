@@ -23,10 +23,10 @@ def printTime():
 def main():
     backend_cfg = habitat_sim.SimulatorConfiguration()
     backend_cfg.scene_id = (
-        "data/scene_datasets/mp3d_example/17DRP5sb8fy/17DRP5sb8fy.glb"
+        "./data/scene_datasets/mp3d_example/17DRP5sb8fy/17DRP5sb8fy.glb"
     )
     backend_cfg.scene_dataset_config_file = (
-        "data/scene_datasets/mp3d_example/mp3d.scene_dataset_config.json"
+        "./data/scene_datasets/mp3d_example/mp3d.scene_dataset_config.json"
     )
     backend_cfg.load_semantic_mesh = True
     backend_cfg.enable_physics = False
